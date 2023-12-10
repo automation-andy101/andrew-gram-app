@@ -31,3 +31,5 @@ export default {
 
 ## Run app locally
 npm run dev
+
+0:30
