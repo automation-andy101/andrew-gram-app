@@ -32,4 +32,7 @@ export default {
 ## Run app locally
 npm run dev
 
-50:00
+1:33:00
+
+<!-- screen grab -->
+win + shift + s
