@@ -12,12 +12,16 @@ import { useForm } from "react-hook-form"
 import { SignupValidation } from "@/lib/validation"
 import { z } from "zod"
 import Loader from "@/components/shared/Loader"
-import { createUserAccount } from "@/lib/appwrite/api"
+import { useCreateUserAccount, useSignInAccountMutation } from "@/lib/react-query/queriesAndMutations"
+import { signInAccount } from "@/lib/appwrite/api"
 
 
 const SignupForm = () => {
   const { toast } = useToast()
-  const isLoading = false;
+  
+  // Queries
+  const { mutateAsync: createUserAccount, isLoading: isCreatingAccount } = useCreateUserAccount();
+  const { mutateAsync: signInAccount, isLoading: isSigningIn } = useSignInAccountMutation()
 
   // 1. Define your form.
   const form = useForm<z.infer<typeof SignupValidation>>({
@@ -40,7 +44,16 @@ const SignupForm = () => {
       })
     }
 
-    const session = await signInAccount()
+    const session = await signInAccount({
+      email: values.email,
+      password: values.password
+    })
+
+    if (!session) {
+      return toast({ title: 'Sign in failed. Please try again.' })
+    }
+
+    
     
   }
 
@@ -107,7 +120,7 @@ const SignupForm = () => {
               )}
             />
             <Button type="submit" className="shad-button_primary">
-              {isLoading ? (
+              {isCreatingUser ? (
                 <div className="flex-center gap-2">
                   <Loader />
                   Loading...
