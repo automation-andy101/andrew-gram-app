@@ -1,6 +1,6 @@
 
 import { zodResolver } from "@hookform/resolvers/zod"
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 
 import { useToast } from "@/components/ui/use-toast"
 
@@ -14,14 +14,17 @@ import { z } from "zod"
 import Loader from "@/components/shared/Loader"
 import { useCreateUserAccount, useSignInAccountMutation } from "@/lib/react-query/queriesAndMutations"
 import { signInAccount } from "@/lib/appwrite/api"
+import { useUserContext } from "@/context/AuthContext"
 
 
 const SignupForm = () => {
-  const { toast } = useToast()
+  const { toast } = useToast();
+  const { checkAuthUser, isLoading: isUserLoading } = useUserContext();
+  const navigate = useNavigate();
   
   // Queries
-  const { mutateAsync: createUserAccount, isLoading: isCreatingAccount } = useCreateUserAccount();
-  const { mutateAsync: signInAccount, isLoading: isSigningIn } = useSignInAccountMutation()
+  const { mutateAsync: createUserAccount, isPending: isCreatingAccount } = useCreateUserAccount();
+  const { mutateAsync: signInAccount, isPending: isSigningIn } = useSignInAccountMutation()
 
   // 1. Define your form.
   const form = useForm<z.infer<typeof SignupValidation>>({
@@ -53,8 +56,15 @@ const SignupForm = () => {
       return toast({ title: 'Sign in failed. Please try again.' })
     }
 
-    
-    
+    const isLoggedIn = await checkAuthUser();
+
+    if (isLoggedIn) {
+      form.reset();
+
+      navigate('/');
+    } else {
+      return toast({ title: 'Sign up failed. Please try again.' })
+    }
   }
 
   return (
@@ -120,7 +130,7 @@ const SignupForm = () => {
               )}
             />
             <Button type="submit" className="shad-button_primary">
-              {isCreatingUser ? (
+              {isCreatingAccount ? (
                 <div className="flex-center gap-2">
                   <Loader />
                   Loading...
@@ -140,3 +150,7 @@ const SignupForm = () => {
 }
 
 export default SignupForm
+
+function checkAuthUser() {
+  throw new Error("Function not implemented.")
+}
