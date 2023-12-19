@@ -12,7 +12,7 @@ import { useForm } from "react-hook-form"
 import { SigninValidation } from "@/lib/validation"
 import { z } from "zod"
 import Loader from "@/components/shared/Loader"
-import { useSignInAccountMutation } from "@/lib/react-query/queriesAndMutations"
+import { useSignInAccount } from "@/lib/react-query/queries"
 import { useUserContext } from "@/context/AuthContext"
 
 
@@ -22,7 +22,7 @@ const SigninForm = () => {
   const navigate = useNavigate();
   
   // Queries
-  const { mutateAsync: signInAccount } = useSignInAccountMutation()
+  const { mutateAsync: signInAccount } = useSignInAccount()
 
   // 1. Define your form.
   const form = useForm<z.infer<typeof SigninValidation>>({
@@ -47,12 +47,8 @@ const SigninForm = () => {
 
     const isLoggedIn = await checkAuthUser();
 
-    console.log({isLoggedIn})
-
     if (isLoggedIn) {
       form.reset();
-
-      console.log('NAVIGATING')
 
       navigate('/');
     } else {

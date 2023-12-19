@@ -12,7 +12,7 @@ import { useForm } from "react-hook-form"
 import { SignupValidation } from "@/lib/validation"
 import { z } from "zod"
 import Loader from "@/components/shared/Loader"
-import { useCreateUserAccount, useSignInAccountMutation } from "@/lib/react-query/queriesAndMutations"
+import { useCreateUserAccount, useSignInAccount } from "@/lib/react-query/queries"
 import { signInAccount } from "@/lib/appwrite/api"
 import { useUserContext } from "@/context/AuthContext"
 
@@ -24,7 +24,7 @@ const SignupForm = () => {
   
   // Queries
   const { mutateAsync: createUserAccount, isPending: isCreatingAccount } = useCreateUserAccount();
-  const { mutateAsync: signInAccount, isPending: isSigningIn } = useSignInAccountMutation()
+  const { mutateAsync: signInAccount, isPending: isSigningIn } = useSignInAccount()
 
   // 1. Define your form.
   const form = useForm<z.infer<typeof SignupValidation>>({
