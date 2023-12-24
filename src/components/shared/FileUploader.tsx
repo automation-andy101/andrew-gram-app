@@ -58,3 +58,5 @@ const FileUploader = ({ fieldChange, mediaUrl }: FileUploaderProps) => {
         </div>
     );
 };
+
+export default FileUploader;
